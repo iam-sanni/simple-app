@@ -1,18 +1,21 @@
 pipeline {
     agent any
-    tools {
-      nodejs '20.7.0'
-    }
     stages {
-        stage('print versions') {
+        stage('Clone Repo') {
           steps {
-            sh 'npm version'
+            git branch: 'master',
+            url: ''
           }
         }
-        stage('codedeploy'){
+        stage('zip file') {
           steps {
-            step([$class: 'AWSCodeDeployPublisher', applicationName: 'sample-app', deploymentGroupAppspec: false, deploymentGroupName: 'sample-app', excludes: '', iamRoleArn: '', includes: 'dist/', proxyHost: '', proxyPort: 0, region: 'us-east-1', s3bucket: 'deploymasters-nodejs', s3prefix: '', subdirectory: '', versionFileName: '', waitForCompletion: false])
-           }
+            sh 'zip -r $Sample.zip /var/lib/jenkins/workspace/simple'
+          }
+        }
+        stage('upload to s3') {
+          steps {
+            sh 'aws s3 cp $Sample.zip s3://sampleapp-1/'
+          }
         }
     }
 }
