@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
           steps {
-            git branch: 'master',
+            git branch: 'main',
             url: 'https://github.com/sanniraj99/simple-app.git'
           }
         }
